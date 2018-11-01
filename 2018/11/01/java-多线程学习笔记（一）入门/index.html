@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="无名者的博客">
+    <meta name="keyword" content="">
+    <meta name="theme-color" content="#600090">
+    <meta name="msapplication-navbutton-color" content="#600090">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#600090">
+    <link rel="shortcut icon" href="https://cdn4.iconfinder.com/data/icons/ionicons/512/icon-person-128.png">
+    <link rel="alternate" type="application/atom+xml" title="Hao" href="/atom.xml">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
+    <title>
+        
+        java 多线程学习笔记（一）入门｜Hao&#39;s blog
+        
+    </title>
+
+    <link rel="canonical" href="http://blog.chenghao.icu/2018/11/01/java-多线程学习笔记（一）入门/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/blog-style.css">
+
+    <!-- Pygments Github CSS -->
+    <link rel="stylesheet" href="/css/syntax.css">
+</head>
+
+<style>
+
+    header.intro-header {
+        background-image: url('makise-kurisu-steins-gate-papers-semi-realistic-anime-15620.jpg')
+    }
+</style>
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="" class="animated fadeIn">
+<!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top " id="nav-top" data-ispost="true" data-istags="false
+" data-ishome="false">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand animated pulse" href="/">
+                <span class="brand-logo">
+                    Hao
+                </span>
+                's Blog
+            </a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <!-- /.navbar-collapse -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+					
+                    
+                        
+							
+                        <li>
+                            <a href="/tags/">tags</a>
+                        </li>
+							
+						
+                    
+					
+					
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+//    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+<!-- Main Content -->
+
+<!--only post-->
+
+
+<img class="wechat-title-img" src="http://ch-blog-img.oss-cn-shanghai.aliyuncs.com/blog/img/makise-kurisu-steins-gate-papers-semi-realistic-anime-center.jpg">
+
+
+<style>
+    
+    header.intro-header {
+        background-image: url('http://ch-blog-img.oss-cn-shanghai.aliyuncs.com/blog/img/makise-kurisu-steins-gate-papers-semi-realistic-anime-center.jpg?imageView2/1/w/1400/h/400/interlace/1/q/90')
+    }
+
+    
+</style>
+
+<header class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <div class="post-heading">
+                    <h1>java 多线程学习笔记（一）入门</h1>
+                    
+                    <span class="meta">
+                         作者 Hao Cheng
+                        <span>
+                          日期 2018-11-01
+                         </span>
+                    </span>
+                    <div class="tags text-center">
+                        
+                        <a class="tag" href="/tags/#java" title="java">java</a>
+                        
+                        <a class="tag" href="/tags/#多线程" title="多线程">多线程</a>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="post-title-haojen">
+        <span>
+            java 多线程学习笔记（一）入门
+        </span>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+            <!-- Post Container -->
+            <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
+                <h1 id="Java-多线程学习笔记（一）入门"><a href="#Java-多线程学习笔记（一）入门" class="headerlink" title="Java 多线程学习笔记（一）入门"></a>Java 多线程学习笔记（一）入门</h1><h2 id="Tread-与-Runnable-的区别"><a href="#Tread-与-Runnable-的区别" class="headerlink" title="Tread 与 Runnable 的区别"></a>Tread 与 Runnable 的区别</h2><p>众所周知，实现线程有两种模式，其一继承Thread类，覆盖run方法，其二，实现Runnable接口。前一种体现的模板类设计模式，后者体现的是策略模式，二者并无优劣高低之分，各有各的区别，</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// SimpleThread的num是各个线程的私有成员，线程对自己num递增不会影响其他线程，若想改成线程相互影响，则需要加入static</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SimpleThread</span> <span class="keyword">extends</span> <span class="title">Thread</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> num = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">SimpleThread</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">super</span>(name);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span></span>&#123;</span><br><span class="line">      <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">        System.out.println( <span class="keyword">this</span>.getName() + <span class="string">"="</span> + ++num);</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">          TimeUnit.SECONDS.sleep(<span class="number">1</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">          e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">threadShow</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    IntStream.range(<span class="number">0</span>,<span class="number">5</span>).mapToObj(</span><br><span class="line">        (num) -&gt; <span class="keyword">new</span> SimpleThread(<span class="string">"SimpleThread-"</span> + num)</span><br><span class="line">    ).forEach(Thread::start);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 传入Runnabel接口，几个线程均执行的是该对象的run方法，因此无需要static修饰num，几个线程对num操作会相互影响。</span></span><br><span class="line"> <span class="class"><span class="keyword">class</span> <span class="title">SimpleRunnable</span> <span class="keyword">implements</span> <span class="title">Runnable</span></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> num = <span class="number">0</span>;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">        System.out.println( Thread.currentThread().getName() + <span class="string">"="</span> + ++num);</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">          TimeUnit.SECONDS.sleep(<span class="number">1</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">          e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">runnableShow</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    SimpleRunnable simpleRunnable = <span class="keyword">new</span> SimpleRunnable();</span><br><span class="line">    IntStream.range(<span class="number">0</span>,<span class="number">5</span>).mapToObj(</span><br><span class="line">        (num) -&gt; <span class="keyword">new</span> Thread(simpleRunnable,<span class="string">"SimpleRunnable-"</span> + num)</span><br><span class="line">    ).forEach(Thread::start);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Java-内存结构，Thread与虚拟机栈"><a href="#Java-内存结构，Thread与虚拟机栈" class="headerlink" title="Java 内存结构，Thread与虚拟机栈"></a>Java 内存结构，Thread与虚拟机栈</h2><p><img src="http://ch-blog-img.oss-cn-shanghai.aliyuncs.com/blog/img/JVM%E5%86%85%E5%AD%98%E7%BB%93%E6%9E%84%E5%9B%BE.png" alt="JVM内存结构图"></p>
+<ul>
+<li>程序计数器 线程私有</li>
+<li>java虚拟机栈 线程私有 通过-xss配置</li>
+<li>本地方法栈 jni调用使用 线程私有</li>
+<li>堆内存，线程共享，几乎存放java运行期间创建的所有对象，是GC重点关注区域，又称“GC堆”</li>
+<li>方法区 线程共享</li>
+<li>java 8 元空间</li>
+</ul>
+<p>粗略认为Java进程内存大小为 堆内存 + 线程数量*栈内存</p>
+<h2 id="守护线程"><a href="#守护线程" class="headerlink" title="守护线程"></a>守护线程</h2><p>又称后台线程，随jvm退出而退出，当jvm存在一个非守护线程时，jvm不会自动退出。</p>
+<h2 id="Thread-sleep-与-yield"><a href="#Thread-sleep-与-yield" class="headerlink" title="Thread sleep 与 yield"></a>Thread sleep 与 yield</h2><p>sleep使当前线程进入睡眠状态。可以使用TimeUnit来代替sleep方法。<br>yield是启发式方法，提醒调度器自愿放弃当前CPU资源，当CPU资源不紧张时，可能会忽略。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">item</th>
+<th style="text-align:center">sleep</th>
+<th style="text-align:center">yield</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">一定执行</td>
+<td style="text-align:center">是</td>
+<td style="text-align:center">否</td>
+</tr>
+<tr>
+<td style="text-align:center">捕获中断</td>
+<td style="text-align:center">是</td>
+<td style="text-align:center">否</td>
+</tr>
+</tbody>
+</table>
+<h2 id="Thread-优先级"><a href="#Thread-优先级" class="headerlink" title="Thread 优先级"></a>Thread 优先级</h2><p>Thread 优先级也是个hint操作，你不能严重依赖优先级来实现业务逻辑。<br>线程优先级在1-10之间，且不能超过group的优先级。默认情况下，优先级和父线程优先级一致，通常是5，因为main优先级默认是5。</p>
+<h2 id="Thread-interrupt"><a href="#Thread-interrupt" class="headerlink" title="Thread interrupt"></a><strong>Thread interrupt</strong></h2><h3 id="线程-interrupt-与-可中断方法"><a href="#线程-interrupt-与-可中断方法" class="headerlink" title="线程 interrupt 与 可中断方法"></a>线程 interrupt 与 可中断方法</h3><p>以下方法会使线程进入阻塞状态，调用该线程的interrupt方法，可以打断阻塞。</p>
+<ul>
+<li>Object wait 及其重载方法</li>
+<li>Thread sleep 及其重载方法</li>
+<li>Thread join 及其重载方法</li>
+<li>InterruptibleChannel 的 io 操作</li>
+<li>Selector 的 wakeup 方法</li>
+<li>其他方法<br>以上方法又称<strong>可中断方法</strong>。记住打断一个线程<strong>并不等于该线程生命周期结束</strong>，仅仅是<strong>打断了当前线程的阻塞状态</strong>。<br>一旦线程在阻塞情况下被打断，会抛出InterruptException的异常，该异常就像一个signal信号一样，通知当前线程被打断了。</li>
+</ul>
+<h3 id="isInterrupted-和-Interrupted"><a href="#isInterrupted-和-Interrupted" class="headerlink" title="isInterrupted 和 Interrupted"></a>isInterrupted 和 Interrupted</h3><p>isInterrupted。该方法是线程成员方法，对线程Interrupt标识的一个判断，并不会影响该标识发生任何改变。<br>interrupted。是一个静态方法，调用该方法会擦除线程的interrupt标识。如果线程被打断，那么调用该方法，第一次返回true，随后调用只会返回false，除非线程再次被打断。</p>
+<blockquote>
+<p>可中断方法（如sleep）在捕获到中断信号，会重置interrupt标识。</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">noSleep</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">  Thread thread = <span class="keyword">new</span> Thread() &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line"></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br><span class="line">  thread.setDaemon(<span class="keyword">true</span>);</span><br><span class="line">  thread.start();</span><br><span class="line">  TimeUnit.MILLISECONDS.sleep(<span class="number">2</span>);</span><br><span class="line">  System.out.printf(<span class="string">"Thread is interrupted ? %s\n"</span>,thread.isInterrupted());</span><br><span class="line">  thread.interrupt();</span><br><span class="line">  System.out.printf(<span class="string">"Thread is interrupted ? %s\n"</span>,thread.isInterrupted());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="http://ch-blog-img.oss-cn-shanghai.aliyuncs.com/blog/img/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E8%BF%90%E8%A1%8C%E7%BB%93%E6%9E%9C%E4%B8%80.png" alt="多线程运行结果一"></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">withSleep</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">  Thread thread = <span class="keyword">new</span> Thread() &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">          TimeUnit.MINUTES.sleep(<span class="number">1</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">          System.out.printf(<span class="string">"I am be interrupted ? %s\n"</span>, isInterrupted());</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br><span class="line">  thread.setDaemon(<span class="keyword">true</span>);</span><br><span class="line">  thread.start();</span><br><span class="line">  TimeUnit.MILLISECONDS.sleep(<span class="number">2</span>);</span><br><span class="line">  System.out.printf(<span class="string">"Thread is interrupted ? %s\n"</span>,thread.isInterrupted());</span><br><span class="line">  thread.interrupt();</span><br><span class="line">  TimeUnit.MILLISECONDS.sleep(<span class="number">2</span>);</span><br><span class="line">  System.out.printf(<span class="string">"Thread is interrupted ? %s\n"</span>,thread.isInterrupted());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="http://ch-blog-img.oss-cn-shanghai.aliyuncs.com/blog/img/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E8%BF%90%E8%A1%8C%E7%BB%93%E6%9E%9C%E4%BA%8C.png" alt="多线程运行结果二"><br><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">  Thread thread = <span class="keyword">new</span> Thread()&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">        System.out.println(Thread.interrupted());</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br><span class="line">  thread.setDaemon(<span class="keyword">true</span>);</span><br><span class="line">  thread.start();</span><br><span class="line"></span><br><span class="line">  TimeUnit.MILLISECONDS.sleep(<span class="number">2</span>);</span><br><span class="line">  thread.interrupt();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><img src="http://ch-blog-img.oss-cn-shanghai.aliyuncs.com/blog/img/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E8%BF%90%E8%A1%8C%E7%BB%93%E6%9E%9C%E4%B8%89.png" alt="多线程运行结果三"></p>
+<p>isInterrupted 和 interrupted均调用同一个本地方法：<br><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">native</span> <span class="keyword">boolean</span> <span class="title">isInterrupted</span><span class="params">(<span class="keyword">boolean</span> clearInterrupted)</span></span>;</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>当线程在可中断方法前被中断，则后续的可中断方法将立即中断。</p>
+</blockquote>
+<h2 id="Thread-join"><a href="#Thread-join" class="headerlink" title="Thread join"></a>Thread join</h2><p>当前线程A join 某个线程B，会使当前线程A处于blocked状态进入等待，直到B线程结束或者达到给定的时间。</p>
+<h2 id="Thread退出"><a href="#Thread退出" class="headerlink" title="Thread退出"></a>Thread退出</h2><h3 id="线程完成后正常结束"><a href="#线程完成后正常结束" class="headerlink" title="线程完成后正常结束"></a>线程完成后正常结束</h3><h3 id="手动控制线程退出"><a href="#手动控制线程退出" class="headerlink" title="手动控制线程退出"></a>手动控制线程退出</h3><p>线程创建与销毁，具有较高的成本。因此一个线程往往循环执行某些工作，比如心跳检查或是其他工作。当决定退出的时候可以使用线程中断等方式使其退出。<br><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">while</span> (!isInterrupted()) &#123;</span><br><span class="line">    <span class="comment">// working</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>当其他线程调用interrupt后，可使线程退出。<br>当然，由于interrupt受中断方法影响，故可以采用volatile修饰的开关flag来控制，volatile关键字是使对象修改后强制在各个线程内进行同步。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">boolean</span> closed = <span class="keyword">false</span>;</span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">while</span> (!closed &amp;&amp; !isInterrupt()) &#123;</span><br><span class="line">    <span class="comment">// working</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="通过unchecked-exception使线程异常退出"><a href="#通过unchecked-exception使线程异常退出" class="headerlink" title="通过unchecked exception使线程异常退出"></a>通过unchecked exception使线程异常退出</h3><p>可以手动checked异常封装程unchecked exception（Runtime Exception）抛出来结束线程。</p>
+<h3 id="线程假死"><a href="#线程假死" class="headerlink" title="线程假死"></a>线程假死</h3><p>需通过其他工具如jconsole，jstack来分析线程假死原因。</p>
+
+                <hr>
+                
+
+                <ul class="pager">
+                    
+                    
+                    <li class="next">
+                        <a href="/2018/10/31/First-look-on-protobuf-with-java/" data-toggle="tooltip" data-placement="top" title="First look on protobuf with java">Next Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+
+                
+
+                
+
+
+                <!--加入新的评论系统-->
+                
+
+                
+
+            </div>
+
+            <div class="hidden-xs col-sm-3 toc-col">
+                <div class="toc-wrap">
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Java-多线程学习笔记（一）入门"><span class="toc-text">Java 多线程学习笔记（一）入门</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Tread-与-Runnable-的区别"><span class="toc-text">Tread 与 Runnable 的区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Java-内存结构，Thread与虚拟机栈"><span class="toc-text">Java 内存结构，Thread与虚拟机栈</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#守护线程"><span class="toc-text">守护线程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Thread-sleep-与-yield"><span class="toc-text">Thread sleep 与 yield</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Thread-优先级"><span class="toc-text">Thread 优先级</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Thread-interrupt"><span class="toc-text">Thread interrupt</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#线程-interrupt-与-可中断方法"><span class="toc-text">线程 interrupt 与 可中断方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#isInterrupted-和-Interrupted"><span class="toc-text">isInterrupted 和 Interrupted</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Thread-join"><span class="toc-text">Thread join</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Thread退出"><span class="toc-text">Thread退出</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#线程完成后正常结束"><span class="toc-text">线程完成后正常结束</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#手动控制线程退出"><span class="toc-text">手动控制线程退出</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#通过unchecked-exception使线程异常退出"><span class="toc-text">通过unchecked exception使线程异常退出</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#线程假死"><span class="toc-text">线程假死</span></a></li></ol></li></ol></li></ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5 class="text-center">
+                        <a href="/tags/">FEATURED TAGS</a>
+                    </h5>
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/#java" title="java">java</a>
+                        
+                        <a class="tag" href="/tags/#多线程" title="多线程">多线程</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+        </div>
+
+    </div>
+</article>
+
+
+
+
+
+
+
+<!-- Footer -->
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <br>
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://github.com/chenghao2262">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Hao 2018
+                    <br>
+                    <span id="busuanzi_container_site_pv" style="font-size: 12px;">PV: <span id="busuanzi_value_site_pv"></span> Times</span>
+                    <br>
+                    Theme by <a href="https://haojen.github.io/">Haojen Ma</a>
+                </p>
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/blog.js"></script>
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://blog.chenghao.icu/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+<!-- Google Analytics -->
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- swiftype -->
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install','','2.0.0');
+</script>
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<!--wechat title img-->
+<img class="wechat-title-img" src="">
+</body>
+
+</html>
