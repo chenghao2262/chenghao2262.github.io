@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.5.0" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.5.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.5.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.5.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.5.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '6.5.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="Java 多线程学习笔记（二）基础synchronized 关键字synchronized关键字可修饰方法或代码块，被修饰的部分，对于多线程来说将按照同步方式来执行。  synchronized 提供一种锁机制，能确保共享变量互斥访问，从而防止数据不一致问题。 synchronized 关键字包括monitor enter 和 monitor exit 两个jvm指令，保证任何线程执行到monit">
+<meta name="keywords" content="java,多线程,synchronized">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java 多线程学习笔记（二）基础">
+<meta property="og:url" content="http://yoursite.com/2018/11/01/Java-多线程学习笔记（二）基础/index.html">
+<meta property="og:site_name" content="昊学">
+<meta property="og:description" content="Java 多线程学习笔记（二）基础synchronized 关键字synchronized关键字可修饰方法或代码块，被修饰的部分，对于多线程来说将按照同步方式来执行。  synchronized 提供一种锁机制，能确保共享变量互斥访问，从而防止数据不一致问题。 synchronized 关键字包括monitor enter 和 monitor exit 两个jvm指令，保证任何线程执行到monit">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://ch-blog-img.oss-cn-shanghai.aliyuncs.com/blog/img/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%8C%EF%BC%89producer%20%E9%97%AE%E9%A2%98.png">
+<meta property="og:image" content="http://ch-blog-img.oss-cn-shanghai.aliyuncs.com/blog/img/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%8C%EF%BC%89consumer%20%E9%97%AE%E9%A2%98.png">
+<meta property="og:updated_time" content="2018-11-02T10:10:27.082Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java 多线程学习笔记（二）基础">
+<meta name="twitter:description" content="Java 多线程学习笔记（二）基础synchronized 关键字synchronized关键字可修饰方法或代码块，被修饰的部分，对于多线程来说将按照同步方式来执行。  synchronized 提供一种锁机制，能确保共享变量互斥访问，从而防止数据不一致问题。 synchronized 关键字包括monitor enter 和 monitor exit 两个jvm指令，保证任何线程执行到monit">
+<meta name="twitter:image" content="http://ch-blog-img.oss-cn-shanghai.aliyuncs.com/blog/img/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%8C%EF%BC%89producer%20%E9%97%AE%E9%A2%98.png">
+
+
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/11/01/Java-多线程学习笔记（二）基础/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Java 多线程学习笔记（二）基础 | 昊学</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">昊学</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+    <a href="/categories/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-th"></i> <br>Categories</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/01/Java-多线程学习笔记（二）基础/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Cheng Hao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="昊学">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Java 多线程学习笔记（二）基础
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-11-01 16:45:26" itemprop="dateCreated datePublished" datetime="2018-11-01T16:45:26+08:00">2018-11-01</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2018-11-02 18:10:27" itemprop="dateModified" datetime="2018-11-02T18:10:27+08:00">2018-11-02</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/java多线程学习笔记/" itemprop="url" rel="index"><span itemprop="name">java多线程学习笔记</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Java-多线程学习笔记（二）基础"><a href="#Java-多线程学习笔记（二）基础" class="headerlink" title="Java 多线程学习笔记（二）基础"></a>Java 多线程学习笔记（二）基础</h1><h2 id="synchronized-关键字"><a href="#synchronized-关键字" class="headerlink" title="synchronized 关键字"></a>synchronized 关键字</h2><p>synchronized关键字可修饰方法或代码块，被修饰的部分，对于多线程来说将按照同步方式来执行。</p>
+<ul>
+<li>synchronized 提供一种锁机制，能确保共享变量互斥访问，从而防止数据不一致问题。</li>
+<li>synchronized 关键字包括monitor enter 和 monitor exit 两个jvm指令，保证任何线程执行到monitor enter之前都必须从主存中获取数据，而不是从缓存中，monitor exit之后，共享变量被更新后的值必须刷入到主内存中。</li>
+<li>synchronized 严格遵守java happen-before 原则，一个monitor exit之前必须要有一个monitor exit</li>
+</ul>
+<h3 id="synchronized-修饰同步方法"><a href="#synchronized-修饰同步方法" class="headerlink" title="synchronized 修饰同步方法"></a>synchronized 修饰同步方法</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">sync</span><span class="params">()</span> </span>&#123;</span><br><span class="line"><span class="comment">// code </span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">sync</span><span class="params">()</span> </span>&#123;</span><br><span class="line"><span class="comment">// code</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="synchronized-修饰同步代码块"><a href="#synchronized-修饰同步代码块" class="headerlink" title="synchronized 修饰同步代码块"></a>synchronized 修饰同步代码块</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> Object MUTEX = <span class="keyword">new</span> Object();</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sync</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">synchronized</span> (MUTEX) &#123;</span><br><span class="line">    <span class="comment">// code</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>线程需要获得MUTEX对象相关联的monitor锁，才能执行同步代码块。未获得monitor锁的线程，将会处于blocked状态。</p>
+<h3 id="synchronized注意点"><a href="#synchronized注意点" class="headerlink" title="synchronized注意点"></a>synchronized注意点</h3><ol>
+<li>与monitor关联对象不能为空</li>
+<li>synchronized作用域不应太大</li>
+<li>各个线程争取的monitor关联对象应该是同一个</li>
+<li>小心死锁</li>
+</ol>
+<h3 id="This-Monitor-和-Class-Monitor"><a href="#This-Monitor-和-Class-Monitor" class="headerlink" title="This Monitor 和 Class Monitor"></a>This Monitor 和 Class Monitor</h3><p>同步代码块可以手动设定需要关联锁的MUTEX对象。那么，同步方法呢？</p>
+<p>同步方法争抢的是This Monitor的关联锁，this是指的该类实例对象。<br>故，同一对象的不同同步实例方法，以及synchronized(this)都是互斥的。</p>
+<p>同步静态方法，争抢的是该类的class实例对象所关联的锁。因而不同同步静态代码也是互斥的。</p>
+<h2 id="wait-和-notify"><a href="#wait-和-notify" class="headerlink" title="wait 和 notify"></a>wait 和 notify</h2><p>wait和notify方法，是Object中的方法，意味着所有java对象都有着两个方法。调用某个对象的wait方法，可使执行线程进入等待。而调用某个对象的notify方法，可使因为调用该对象的wait方法进入等待的线程唤醒。</p>
+<h3 id="wait方法有三个重载方法。"><a href="#wait方法有三个重载方法。" class="headerlink" title="wait方法有三个重载方法。"></a>wait方法有三个重载方法。</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">wait</span><span class="params">()</span> <span class="keyword">throws</span>  InterruptedException</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">wait</span><span class="params">(<span class="keyword">long</span> timeout)</span> <span class="keyword">throws</span>  InterruptedException</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">wait</span><span class="params">(<span class="keyword">long</span> timeout,<span class="keyword">int</span> nanos)</span> <span class="keyword">throws</span>  InterruptedException</span></span><br></pre></td></tr></table></figure>
+<ol>
+<li>wait这三个方法最终都调用到wait(long)，wait()等价于wait(0)意味着用不超时，后两个会设置超时时间。超时时间指在该时间内未被唤醒，将会触发超时。</li>
+<li>调用wait方法，必须先拥有该对象的关联锁，也就是说在该对象非同步代码块中调用wait方法会抛出异常。</li>
+<li>当前线程执行了该对象的wait方法后，会<strong>放弃</strong>该对象的monitor锁并进入与该对象相关的wait set中，意味着其他线程有机会继续争抢该monitor的所有权。</li>
+</ol>
+<h3 id="notify方法"><a href="#notify方法" class="headerlink" title="notify方法"></a>notify方法</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">native</span> <span class="keyword">void</span> <span class="title">notify</span><span class="params">()</span></span></span><br></pre></td></tr></table></figure>
+<ol>
+<li>唤醒单个正在执行该对象wait方法的线程。</li>
+<li>如果没有这样的线程，忽略该操作。</li>
+<li>被唤醒的线程需要重新获取该对象所关联的monitor锁才能继续执行。</li>
+</ol>
+<p>关于wait和notify的注意事项</p>
+<ul>
+<li>wait方法是可中断方法，其他线程interrupt是可以将其打断的。</li>
+<li>线程执行某个对象的wait方法会进入与之对应的wait set中。每个对象的monitor都有一个与之对应的wait set</li>
+<li>wait和notify都必须在该对象的同步代码中使用，否则会报IllegalMonitorStateException，同步代码的monitor和与执行wait notify方法的对象<strong>一致</strong>，简单地说用哪个对象的monitor进行同步，就只能用哪个对象进行wait和notify操作。</li>
+</ul>
+<h3 id="示例代码"><a href="#示例代码" class="headerlink" title="示例代码"></a>示例代码</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">EventQueue</span> </span>&#123;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">int</span> max;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Event</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> LinkedList&lt;Event&gt; eventQueue</span><br><span class="line">      = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> <span class="keyword">int</span> DEFAULT_MAX_EVENT = <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">EventQueue</span><span class="params">(<span class="keyword">int</span> max)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.max = max;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">EventQueue</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>(DEFAULT_MAX_EVENT);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">offer</span><span class="params">(Event event)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (eventQueue) &#123;</span><br><span class="line">      <span class="keyword">if</span> (eventQueue.size() &gt;= max) &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">          console(<span class="string">"this queue is full"</span>);</span><br><span class="line">          eventQueue.wait();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">          e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      console(<span class="string">" the new event is submitted"</span>);</span><br><span class="line">      eventQueue.addLast(event);</span><br><span class="line">      eventQueue.notify();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> Event <span class="title">take</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (eventQueue) &#123;</span><br><span class="line">      <span class="keyword">if</span> (eventQueue.isEmpty()) &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">          console(<span class="string">" the queue is empty"</span>);</span><br><span class="line">          eventQueue.wait();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">          e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      Event event = eventQueue.removeFirst();</span><br><span class="line">      <span class="keyword">this</span>.eventQueue.notify();</span><br><span class="line">      console(<span class="string">" the event "</span> + event + <span class="string">" is handled"</span>);</span><br><span class="line">      <span class="keyword">return</span> event;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">console</span><span class="params">(String message)</span> </span>&#123;</span><br><span class="line">    System.out.printf(<span class="string">"%s:%s\n"</span>,Thread.currentThread().getName(),message);</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.chenghao.concurrent;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.TimeUnit;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">EventClient</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> EventQueue eventQueue = <span class="keyword">new</span> EventQueue();</span><br><span class="line">    <span class="keyword">new</span> Thread(</span><br><span class="line">        () -&gt; &#123;</span><br><span class="line">          <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">            eventQueue.offer(<span class="keyword">new</span> EventQueue.Event());</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;, <span class="string">"Producer"</span></span><br><span class="line">    ).start();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">new</span> Thread(</span><br><span class="line">        () -&gt; &#123;</span><br><span class="line">          <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">            eventQueue.take();</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">              TimeUnit.MILLISECONDS.sleep(<span class="number">10</span>);</span><br><span class="line">            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">              e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;, <span class="string">"Consumer"</span></span><br><span class="line">    ).start();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="多线程通信与"><a href="#多线程通信与" class="headerlink" title="多线程通信与"></a>多线程通信与</h2><p>上述示例代码，在多线程会出现问题。原因在于consumer和producer都是由同一个对象阻塞，producer并不能指定唤醒consumer，相反很可能唤醒一个producer。同样的情况对consumer也是存在的。</p>
+<p><img src="http://ch-blog-img.oss-cn-shanghai.aliyuncs.com/blog/img/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%8C%EF%BC%89producer%20%E9%97%AE%E9%A2%98.png" alt="consumer"><br><img src="http://ch-blog-img.oss-cn-shanghai.aliyuncs.com/blog/img/java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%8C%EF%BC%89consumer%20%E9%97%AE%E9%A2%98.png" alt="producer"></p>
+<p>修改方法,将if-&gt;while,notify-&gt;notifyAll</p>
+<pre><code class="java"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">offer</span><span class="params">(Event event)</span> </span>{
+    <span class="keyword">synchronized</span> (eventQueue) {
+      <span class="keyword">while</span> (eventQueue.size() &gt;= max) {
+        <span class="keyword">try</span> {
+          console(<span class="string">"this queue is full"</span>);
+          eventQueue.wait();
+        } <span class="keyword">catch</span> (InterruptedException e) {
+          e.printStackTrace();
+        }
+      }
+
+      console(<span class="string">" the new event is submitted"</span>);
+      eventQueue.addLast(event);
+      eventQueue.notifyAll();
+    }
+  }
+
+  <span class="function"><span class="keyword">public</span> Event <span class="title">take</span><span class="params">()</span> </span>{
+    <span class="keyword">synchronized</span> (eventQueue) {
+      <span class="keyword">while</span> (eventQueue.isEmpty()) {
+        <span class="keyword">try</span> {
+          console(<span class="string">" the queue is empty"</span>);
+          eventQueue.wait();
+        } <span class="keyword">catch</span> (InterruptedException e) {
+          e.printStackTrace();
+        }
+      }
+
+      Event event = eventQueue.removeFirst();
+      <span class="keyword">this</span>.eventQueue.notifyAll();
+      console(<span class="string">" the event "</span> + event + <span class="string">" is handled"</span>);
+      <span class="keyword">return</span> event;
+    }
+  }
+</code></pre>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/java/" rel="tag"># java</a>
+          
+            <a href="/tags/多线程/" rel="tag"># 多线程</a>
+          
+            <a href="/tags/synchronized/" rel="tag"># synchronized</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/11/01/java-多线程学习笔记（一）入门/" rel="next" title="java 多线程学习笔记（一）入门">
+                <i class="fa fa-chevron-left"></i> java 多线程学习笔记（一）入门
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Cheng Hao</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                    <span class="site-state-item-count">1</span>
+                    <span class="site-state-item-name">categories</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">5</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/chenghao2262" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:chenghao2262@outlook.com" target="_blank" title="E-Mail"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Java-多线程学习笔记（二）基础"><span class="nav-number">1.</span> <span class="nav-text">Java 多线程学习笔记（二）基础</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#synchronized-关键字"><span class="nav-number">1.1.</span> <span class="nav-text">synchronized 关键字</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#synchronized-修饰同步方法"><span class="nav-number">1.1.1.</span> <span class="nav-text">synchronized 修饰同步方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#synchronized-修饰同步代码块"><span class="nav-number">1.1.2.</span> <span class="nav-text">synchronized 修饰同步代码块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#synchronized注意点"><span class="nav-number">1.1.3.</span> <span class="nav-text">synchronized注意点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#This-Monitor-和-Class-Monitor"><span class="nav-number">1.1.4.</span> <span class="nav-text">This Monitor 和 Class Monitor</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#wait-和-notify"><span class="nav-number">1.2.</span> <span class="nav-text">wait 和 notify</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#wait方法有三个重载方法。"><span class="nav-number">1.2.1.</span> <span class="nav-text">wait方法有三个重载方法。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#notify方法"><span class="nav-number">1.2.2.</span> <span class="nav-text">notify方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#示例代码"><span class="nav-number">1.2.3.</span> <span class="nav-text">示例代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多线程通信与"><span class="nav-number">1.3.</span> <span class="nav-text">多线程通信与</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright"> &copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Cheng Hao</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Mist</a> v6.5.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    
+      
+  
+  <script type="text/javascript" color="0,0,255" opacity="0.5" zindex="-1" count="99" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.5.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.5.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.5.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.5.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
