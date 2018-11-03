@@ -120,7 +120,7 @@
 <meta property="og:image" content="http://ch-blog-img.oss-cn-shanghai.aliyuncs.com/blog/img/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E8%BF%90%E8%A1%8C%E7%BB%93%E6%9E%9C%E4%B8%80.png">
 <meta property="og:image" content="http://ch-blog-img.oss-cn-shanghai.aliyuncs.com/blog/img/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E8%BF%90%E8%A1%8C%E7%BB%93%E6%9E%9C%E4%BA%8C.png">
 <meta property="og:image" content="http://ch-blog-img.oss-cn-shanghai.aliyuncs.com/blog/img/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E8%BF%90%E8%A1%8C%E7%BB%93%E6%9E%9C%E4%B8%89.png">
-<meta property="og:updated_time" content="2018-11-02T06:12:07.231Z">
+<meta property="og:updated_time" content="2018-11-03T12:07:54.720Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="java 多线程学习笔记（一）入门">
 <meta name="twitter:description" content="Java 多线程学习笔记（一）入门Tread 与 Runnable 的区别众所周知，实现线程有两种模式，其一继承Thread类，覆盖run方法，其二，实现Runnable接口。前一种体现的模板类设计模式，后者体现的是策略模式，二者并无优劣高低之分，各有各的区别， 12345678910111213141516171819202122232425262728293031323334353637383">
@@ -363,7 +363,7 @@
                 
                   <span class="post-meta-item-text">Edited on</span>
                 
-                <time title="Modified: 2018-11-02 14:12:07" itemprop="dateModified" datetime="2018-11-02T14:12:07+08:00">2018-11-02</time>
+                <time title="Modified: 2018-11-03 20:07:54" itemprop="dateModified" datetime="2018-11-03T20:07:54+08:00">2018-11-03</time>
               
             
           </span>
@@ -457,8 +457,9 @@
 <li>Thread join 及其重载方法</li>
 <li>InterruptibleChannel 的 io 操作</li>
 <li>Selector 的 wakeup 方法</li>
-<li>其他方法<br>以上方法又称<strong>可中断方法</strong>。记住打断一个线程<strong>并不等于该线程生命周期结束</strong>，仅仅是<strong>打断了当前线程的阻塞状态</strong>。<br>一旦线程在阻塞情况下被打断，会抛出InterruptException的异常，该异常就像一个signal信号一样，通知当前线程被打断了。</li>
+<li>其他方法</li>
 </ul>
+<p>以上方法又称<strong>可中断方法</strong>。记住打断一个线程<strong>并不等于该线程生命周期结束</strong>，仅仅是<strong>打断了当前线程的阻塞状态</strong>。<br>一旦线程在阻塞情况下被打断，会抛出InterruptException的异常，该异常就像一个signal信号一样，通知当前线程被打断了。</p>
 <h3 id="isInterrupted-和-Interrupted"><a href="#isInterrupted-和-Interrupted" class="headerlink" title="isInterrupted 和 Interrupted"></a>isInterrupted 和 Interrupted</h3><p>isInterrupted。该方法是线程成员方法，对线程Interrupt标识的一个判断，并不会影响该标识发生任何改变。<br>interrupted。是一个静态方法，调用该方法会擦除线程的interrupt标识。如果线程被打断，那么调用该方法，第一次返回true，随后调用只会返回false，除非线程再次被打断。</p>
 <blockquote>
 <p>可中断方法（如sleep）在捕获到中断信号，会重置interrupt标识。</p>
@@ -595,7 +596,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-count">4</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>
@@ -610,7 +611,9 @@
                     
                       
                     
-                    <span class="site-state-item-count">1</span>
+                      
+                    
+                    <span class="site-state-item-count">2</span>
                     <span class="site-state-item-name">categories</span>
                   </a>
                 </div>
