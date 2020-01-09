@@ -23,6 +23,8 @@ public interface Lock {
 }
 ```
 
+<!--more-->
+
 首先给BooleanLock定义如下成员变量，其中bollean变量记录锁状态，currentThread记录持锁线程，blockedList记录阻塞线程列表。
 
 ```java
@@ -33,7 +35,6 @@ public static class BooleanLock implements Lock {
     ...
 }
 ```
-<!--more-->
 
 来具体看lock实现
 ```java

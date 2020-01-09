@@ -20,14 +20,14 @@ message SearchRequest {
   optional int32 result_per_page = 3;
 }
 ```
+<!--more-->
+
 message每条filed由以下构成
 rules type name = number;[option]
 rules 用来限定该filed属性
 * required
 * optional
 * repeated
-
-<!--more-->
 
 required表示一定需要该filed。
 optional表示可选filed。可以设置optional的默认值，如果未设置，protobuf会依据filed的type设置默认的默认值。（实际上在parse过程中，protobuf会为optional filed设置一个默认值）

@@ -19,6 +19,8 @@ tags:
 ### 传统的java代码如何实现网络访问
 以下是一段传统java网络处理代码
 
+<!--more-->
+
 ```java
 ServerSocket serverSocket = new ServerSocket(portNumber);
 Socket clientSocket = serverSocket.accept();
@@ -40,9 +42,8 @@ while ((request = in.readLine()) != null) {
 2. accept()等待连接建立
 3. 不断地readLine()读取数据并返回response
 
-<!--more-->
 从这段代码可以看出，在同一时刻只能处理一个链接，如果要处理多并发，则需要多个线程，每个线程处理一个socket client。
-![传统网络模型图](./1514090182048.png)
+![传统网络模型图](http://ch-blog-img.oss-cn-shanghai.aliyuncs.com/blog/img/%E4%BC%A0%E7%BB%9Fio%E6%A8%A1%E5%9E%8B.png)
 如果我们采用传统的网络模型来支持高并发，会造成一下问题
 - 首先大部分时间，大部分线程都在等待，线程利用率非常底下。
 - 其次每个线程都需要栈内存开销，从64KB-1MB不等，当并发数量过多时，会大大消耗内存资源，造成OutOfMemoryException。
@@ -50,7 +51,7 @@ while ((request = in.readLine()) != null) {
 
 ### Java NIO
 Java 1.4开始引入一种新的IO API，称为NIO，NIO有两种解释，New Input/Output 和 Non-blocking Input/Output ,但是无所谓了，哪种解释都可以。这里采用New Input/Output，对应的传统IO成为OIO。NIO和OIO最大差别在于socker的read/write操作在没有数据的时候会直接返回。这样将不会造成阻塞。NIO将通过一个selector来选择IOready的socket。
-![NIO网络模型](./1514095722382.png)
+![NIO网络模型](http://ch-blog-img.oss-cn-shanghai.aliyuncs.com/blog/img/nio%E6%A8%A1%E5%9E%8B.png)
 
 好处非常明显。
 1. 不会阻塞，由selector检查所有socket状态，而非等待一个socket IO ready。
@@ -85,7 +86,6 @@ Callbakcs(回掉)，是异步编程中的常见概念，这个就不说了。
 Futures是一个较为抽象的概念，它作为placeholder，代表一个异步过程完成后的结果值。将来的某个时刻，在异步过程完结后，可以统统Futures访问这个结果。JDK中提供对Future接口的默认实现类非常一般，需要程序员手工检查状态，并会造成阻塞。因此Netty自己提供一个对Future接口的实现，称为ChannelFuture。
 通过向ChannelFuture注册Listener，待Future完成后会异步回掉Listener的方法。
 ChannelFuture使用示例
-
 ```java
 Channel channel = ...;
 // Does not block
@@ -121,7 +121,7 @@ Callbakcs和Futures共同构成logic部分
 - Error event
 
 inbound event 和 outbound event 数据流模型图
-![Alt text](./1514110975411.png)
+![Alt text](http://ch-blog-img.oss-cn-shanghai.aliyuncs.com/blog/img/%E6%95%B0%E6%8D%AE%E6%B5%81%E6%A8%A1%E5%9E%8B%E5%9B%BE.png)
 对于每个event，都可以分配一个user-implement handler class来处理。当然Netty为Handler提供了一个基本抽象--ChannelHandler，并且提供一套预先处理好的Handler集合，可以支持HTTP 和 SSL/TLS协议。
 
 ## 年轻人的第一个Netty程序
@@ -300,7 +300,7 @@ EventLoop则是定义了connection的生命周期对事件处理的抽象。这�
 - 一个 Channel 会注册都一个EventLoop上.
 - 一个 EventLoop 可能会拥有多个Channel.
 
-![Alt text](./1514464042614.png)
+![EventLoopGroup模型图](http://ch-blog-img.oss-cn-shanghai.aliyuncs.com/blog/img/EventLoopGroup%E6%A8%A1%E5%9E%8B.png)
 
 #### ChannelFuture
 ChannelFuture负责在处理完成后的回掉工作。可以通过其addListener()注册一个ChannelFutureListener，用于在操作完成后进行回调（无论结果是否成功）。
@@ -312,4 +312,22 @@ ChannelHandler 和 ChannelHandler 两个组件主要处理数据流和业务逻�
 从ChannelHandler的角度来看，这是最核心的类，因为其直接负责业务逻辑代码的处理。通过EventDriven机制，ChannelHandler处理各种类型的event，从而实现业务逻辑。从上面例子可以见，Netty一样实现多个默认类，来简化应用开发。
 
 #### ChannelPipeline
-ChannelPipeline提供用于存放ChannelHandler琏的容器，并且定义
+ChannelPipeline可以理解为存放链式ChannelHandler的容器，我们将Socket视为外部，java application视作内部，ChannelHandler分为两类，ChannelInboundHandler表示数据从socket到java，ChannelOutBoundHandler则相反。handler在pipeline中按链式存储，数据或者事件从一个handler传递到下一个handler，虽然两类handler混在一个pipeline中，但是两者不会混淆，netty能分辩两者，流入数据只会被ChannelInboundHandler处理，流出数据只会被ChannelOutboundHandler处理。
+![enter image description here](http://ch-blog-img.oss-cn-shanghai.aliyuncs.com/blog/img/ChannelPipelinewithinboundandoutboundChannelHandlers.png)
+
+当一个handler被添加到pipeline中，会被绑定一个ChannelHandlerContext，context代表handler和pipeline的一种绑定关系，你可以使用context获得底层Channel来进行操作，这种一般用来写输出数据，这会导致数据从pipeline tail开始。第二中则是将数据写入到context中，这将使下一个handler来处理数据。
+
+netty为开发者提供了二者adapter类，方法均作了默认实现，不做任何处理传递到下一个handler，开发者只需覆盖自己感兴趣的方法，其他采用默认实现即可。
+
+* ChannelHandlerAdapter
+* ChannelInboundHandlerAdapter 
+* ChannelOutboundHandlerAdapter 
+* ChannelDuplexHandlerAdapter
+
+特殊handler：encoder和decoder。输出数据需要encode，从object转换成byte，输入数据需要decode，从byte转换成object。netty提供encoder/decoder不是ChannelInboundHandler就是ChannelOutboundHandler。
+
+### Bootstrapping
+netty bootstrap类是提供应用网络层配置容器，可以绑定程序到给定端口或者连接到一个正在监听的主机端口上。前者一般称为server而后者一般称为client，netty也有两类bootstrap，bootstrapserver和bootstrap。
+两者差别除了上述行为外，还有一点很重要的，Bootstrap只有一个EventLoopGroup，而Bootstrap有两个EventLoopGroup。
+server需要两个不同EventLoopGroup，前者只有一个ServerChannel，用来创建对每一个连接创建Channel，并交由第二个EventLoopGroup中的EventLoop处理。应该就是运用到多路io复用技术。
+![enter image description here](http://ch-blog-img.oss-cn-shanghai.aliyuncs.com/blog/img/Server%20with%20two%20EventLoopGroups.png)

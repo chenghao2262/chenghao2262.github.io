@@ -19,6 +19,8 @@ synchronized关键字可修饰方法或代码块，被修饰的部分，对于�
 * synchronized 关键字包括monitor enter 和 monitor exit 两个jvm指令，保证任何线程执行到monitor enter之前都必须从主存中获取数据，而不是从缓存中，monitor exit之后，共享变量被更新后的值必须刷入到主内存中。
 * synchronized 严格遵守java happen-before 原则，一个monitor exit之前必须要有一个monitor exit
 
+<!--more-->
+
 ### synchronized 修饰同步方法
 
 ```java
@@ -43,8 +45,6 @@ public synchronized static void sync() {
 ```
 
 线程需要获得MUTEX对象相关联的monitor锁，才能执行同步代码块。未获得monitor锁的线程，将会处于blocked状态。
-
-<!--more-->
 
 ### synchronized注意点
 

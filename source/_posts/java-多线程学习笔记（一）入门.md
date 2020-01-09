@@ -12,7 +12,11 @@ tags:
 # Java 多线程学习笔记（一）入门
 
 ## Tread 与 Runnable 的区别
-众所周知，实现线程有两种模式，其一继承Thread类，覆盖run方法，其二，实现Runnable接口。前一种体现的模板类设计模式，后者体现的是策略模式，二者并无优劣高低之分，各有各的区别，
+
+众所周知，实现线程有两种模式，其一继承Thread类，覆盖run方法，其二，实现Runnable接口。
+前一种体现的模板类设计模式，后者体现的是策略模式，二者并无优劣高低之分，各有各的区别，
+
+<!--more-->
 
 ```java
 // SimpleThread的num是各个线程的私有成员，线程对自己num递增不会影响其他线程，若想改成线程相互影响，则需要加入static
@@ -67,7 +71,6 @@ class SimpleThread extends Thread {
   }
 ```
 
-<!--more-->
 
 ## Java 内存结构，Thread与虚拟机栈
 
@@ -79,7 +82,7 @@ class SimpleThread extends Thread {
 * 方法区 线程共享
 * java 8 元空间
 
-粗略认为Java进程内存大小为 堆内存 + 线程数量*栈内存
+粗略认为Java进程内存大小为 堆内存 + 线程数量\*栈内存
 
 
 ## 守护线程
